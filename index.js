@@ -1,10 +1,70 @@
 import express from "express";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const { BASE_URL, PORT, AI_API_KEY, AI_CHAT_MODEL, AI_ENDPOINT } = process.env;
 
 const app = express();
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.redirect("/docs");
+});
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API de Chat con IA",
+      version: "1.0.0",
+      description:
+        "Esta API permite enviar un prompt y un mensaje del usuario a un modelo de IA y recibir la respuesta.",
+    },
+  },
+  apis: ["./index.js"],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+/**
+ * @swagger
+ * /chat:
+ *   post:
+ *     description: Enviar un prompt y el texto del usuario para obtener una respuesta del modelo de IA.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - systemPrompt
+ *               - userMessage
+ *             properties:
+ *               systemPrompt:
+ *                 type: string
+ *                 description: Instrucción o contexto para el modelo de IA.
+ *               userMessage:
+ *                 type: string
+ *                 description: El mensaje que el usuario quiere enviar al modelo de IA.
+ *     responses:
+ *       200:
+ *         description: Respuesta generada por el modelo de IA.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 aiResponse:
+ *                   type: string
+ *                   description: Respuesta generada por el modelo de IA.
+ *       400:
+ *         description: Error si faltan variables obligatorias (systemPrompt o userMessage).
+ *       500:
+ *         description: Error interno del servidor al procesar la solicitud.
+ */
 app.post("/chat", async (req, res) => {
   const { systemPrompt, userMessage } = req.body;
 
@@ -65,6 +125,7 @@ const server = app.listen(PORT, (err) => {
   }
 
   console.log(`Servidor corriendo en ${BASE_URL}:${PORT}`);
+  console.log(`Documentación de la API disponible en ${BASE_URL}:${PORT}/docs`);
 });
 
 process.on("SIGINT", () => {
