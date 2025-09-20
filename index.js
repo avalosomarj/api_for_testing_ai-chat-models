@@ -1,10 +1,62 @@
 import express from "express";
 
-const { BASE_URL, PORT } = process.env;
+const { BASE_URL, PORT, AI_API_KEY, AI_CHAT_MODEL, AI_ENDPOINT } = process.env;
 
 const app = express();
-
 app.use(express.json());
+
+app.post("/chat", async (req, res) => {
+  const { systemPrompt, userMessage } = req.body;
+
+  if (!systemPrompt || !userMessage) {
+    return res
+      .status(400)
+      .send("Falta 'systemPrompt' y/o 'userMessage' en la solicitud.");
+  }
+
+  const requestBody = {
+    model: AI_CHAT_MODEL, // Setear variable de modelo en el .env
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt.trim(),
+      },
+      {
+        role: "user",
+        content: userMessage.trim(),
+      },
+    ],
+  };
+
+  try {
+    const fetchData = await fetch(
+      AI_ENDPOINT, // Setear variable de endpoint en el .env
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${AI_API_KEY}`, // Setear variable de API KEY en el .env
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (!fetchData.ok) {
+      throw new Error(`Error: ${fetchData.statusText}`);
+    }
+
+    const response = await fetchData.json();
+
+    res
+      .status(200)
+      .json({ aiResponse: response.choices[0].message.content.trim() }); // Devuelve respuesta del modelo
+  } catch (error) {
+    console.error("Error en la solicitud:", error);
+    res
+      .status(500)
+      .json({ error: "Ocurrió un error al procesar la solicitud." });
+  }
+});
 
 const server = app.listen(PORT, (err) => {
   if (err) {
