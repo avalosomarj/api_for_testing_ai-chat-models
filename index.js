@@ -4,6 +4,15 @@ import swaggerUi from "swagger-ui-express";
 
 const { BASE_URL, PORT, AI_API_KEY, AI_CHAT_MODEL, AI_ENDPOINT } = process.env;
 
+["BASE_URL", "PORT", "AI_API_KEY", "AI_CHAT_MODEL", "AI_ENDPOINT"].forEach(
+  (v) => {
+    if (!process.env[v]) {
+      console.error(`ERROR: Variable de entorno ${v} no definida, revisar .env`);
+      process.exit(1); //Error genérico
+    }
+  }
+);
+
 const app = express();
 app.use(express.json());
 
@@ -68,10 +77,16 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.post("/chat", async (req, res) => {
   const { systemPrompt, userMessage } = req.body;
 
-  if (!systemPrompt || !userMessage) {
+  if (typeof systemPrompt !== "string" || typeof userMessage !== "string") {
     return res
       .status(400)
-      .send("Falta 'systemPrompt' y/o 'userMessage' en la solicitud.");
+      .json({ error: "'systemPrompt' y 'userMessage' deben existir y ser strings." });
+  }
+
+  if (!systemPrompt.trim() || !userMessage.trim()) {
+    return res
+      .status(400)
+      .json({ error: "'systemPrompt' y 'userMessage' no pueden estar vacíos o contener solo espacios." });
   }
 
   const requestBody = {
@@ -102,10 +117,20 @@ app.post("/chat", async (req, res) => {
     );
 
     if (!fetchData.ok) {
-      throw new Error(`Error: ${fetchData.statusText}`);
+      throw new Error(`Falla en fetch: ${fetchData.statusText}`);
     }
 
     const response = await fetchData.json();
+
+    if (
+      !response.choices ||
+      !response.choices.length ||
+      !response.choices[0].message ||
+      !response.choices[0].message.content ||
+      !response.choices[0].message.content.trim()
+    ) {
+      throw new Error("Respuesta inesperada o vacía del modelo");
+    }
 
     res
       .status(200)
@@ -132,6 +157,6 @@ process.on("SIGINT", () => {
   console.log("Servidor apagándose...");
   server.close(() => {
     console.log("Servidor detenido.");
-    process.exit(0);
+    process.exit(130); // Terminado con Ctrl+C
   });
 });
