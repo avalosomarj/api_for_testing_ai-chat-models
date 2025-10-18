@@ -2,9 +2,9 @@ import express from "express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
-import { envs } from "../api_for_testing_ai-chat-models/src/config/env.js"
+import { envs } from "./config/env.js";
 
-const { BASE_URL, PORT, AI_CHAT_MODEL, AI_API_KEY, AI_ENDPOINT} = envs;
+const { AI_CHAT_MODEL, AI_API_KEY, AI_ENDPOINT } = envs;
 
 const app = express();
 app.use(express.json());
@@ -136,20 +136,4 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-const server = app.listen(PORT, (err) => {
-  if (err) {
-    console.error("Error al iniciar el servidor:", err);
-    return;
-  }
-
-  console.log(`Servidor corriendo en ${BASE_URL}:${PORT}`);
-  console.log(`Documentación de la API disponible en ${BASE_URL}:${PORT}/docs`);
-});
-
-process.on("SIGINT", () => {
-  console.log("Servidor apagándose...");
-  server.close(() => {
-    console.log("Servidor detenido.");
-    process.exit(130); // Terminado con Ctrl+C
-  });
-});
+export default app;
