@@ -15,4 +15,4 @@ for (const [key, value] of Object.entries(envs)) {
   }
 }
 
-export { envs };
+export default envs;

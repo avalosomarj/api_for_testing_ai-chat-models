@@ -1,5 +1,5 @@
 import app from "./app.js";
-import { envs } from "./config/env.js";
+import envs from "./config/env.js";
 
 const { BASE_URL, PORT } = envs;
 

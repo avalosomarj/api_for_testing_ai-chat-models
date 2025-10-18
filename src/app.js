@@ -2,7 +2,8 @@ import express from "express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
-import { envs } from "./config/env.js";
+import envs from "./config/env.js";
+import validateChatBody from "./middlewares/validateReqBody.js";
 
 const { AI_CHAT_MODEL, AI_API_KEY, AI_ENDPOINT } = envs;
 
@@ -67,21 +68,9 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
  *       500:
  *         description: Error interno del servidor al procesar la solicitud.
  */
-app.post("/chat", async (req, res) => {
+app.post("/chat", validateChatBody, async (req, res) => {
   const { systemPrompt, userMessage } = req.body;
-
-  if (typeof systemPrompt !== "string" || typeof userMessage !== "string") {
-    return res
-      .status(400)
-      .json({ error: "'systemPrompt' y 'userMessage' deben existir y ser strings." });
-  }
-
-  if (!systemPrompt.trim() || !userMessage.trim()) {
-    return res
-      .status(400)
-      .json({ error: "'systemPrompt' y 'userMessage' no pueden estar vacíos o contener solo espacios." });
-  }
-
+  
   const requestBody = {
     model: AI_CHAT_MODEL, // Setear variable de modelo en el .env
     messages: [
