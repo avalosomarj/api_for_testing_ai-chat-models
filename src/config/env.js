@@ -10,7 +10,7 @@ const envs = {
 
 for (const [key, value] of Object.entries(envs)) {
   if (!value?.trim()) {
-    console.error(`ERROR: Variable de entorno ${key} no definida o vacía, revisar .env`);
+    console.error(`Error: Variable de entorno ${key} no definida o vacía, revisar .env`);
     process.exit(1); //Error genérico
   }
 }
