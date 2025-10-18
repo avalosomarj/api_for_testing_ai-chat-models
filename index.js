@@ -2,16 +2,9 @@ import express from "express";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
-const { BASE_URL, PORT, AI_API_KEY, AI_CHAT_MODEL, AI_ENDPOINT } = process.env;
+import { envs } from "../api_for_testing_ai-chat-models/src/config/env.js"
 
-["BASE_URL", "PORT", "AI_API_KEY", "AI_CHAT_MODEL", "AI_ENDPOINT"].forEach(
-  (v) => {
-    if (!process.env[v]) {
-      console.error(`ERROR: Variable de entorno ${v} no definida, revisar .env`);
-      process.exit(1); //Error genérico
-    }
-  }
-);
+const { BASE_URL, PORT, AI_CHAT_MODEL, AI_API_KEY, AI_ENDPOINT} = envs;
 
 const app = express();
 app.use(express.json());
