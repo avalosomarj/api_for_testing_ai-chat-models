@@ -1,6 +1,6 @@
 import express from "express";
 
-import chatRoute from "./routes/chat.js";
+import chatRoute from "./routes/chat.route.js";
 import createDocWithSwagger from "./config/swagger.js";
 
 const app = express();

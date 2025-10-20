@@ -4,7 +4,7 @@ const validateReqBody = (req, res, next) => {
   if (typeof systemPrompt !== "string" || typeof userMessage !== "string") {
     return res
       .status(400)
-      .json({ error: "'systemPrompt' y 'userMessage' deben existir y ser strings." });
+      .json({ error: "'systemPrompt' y 'userMessage' deben existir y ser de tipo string." });
   }
 
   if (!systemPrompt.trim() || !userMessage.trim()) {

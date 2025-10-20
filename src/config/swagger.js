@@ -7,11 +7,10 @@ const swaggerOptions = {
     info: {
       title: "API de Chat con IA",
       version: "1.0.0",
-      description:
-        "Esta API permite enviar un prompt y un mensaje del usuario a un modelo de IA y recibir la respuesta."
+      description: "Esta API permite enviar un prompt y un mensaje del usuario a un modelo de IA y recibir la respuesta."
     },
   },
-  apis: ["./src/routes/chat.js"],
+  apis: ["./src/routes/chat.route.js"],
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
