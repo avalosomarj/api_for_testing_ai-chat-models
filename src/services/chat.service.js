@@ -13,8 +13,8 @@ const fetchToAI = async (instruction, input) => {
       {
         role: "user",
         content: input.trim(),
-      },
-    ],
+      }
+    ]
   };
 
   const fetchData = await fetch(
@@ -25,21 +25,21 @@ const fetchToAI = async (instruction, input) => {
         Authorization: `Bearer ${AI_API_KEY}`, // Setear variable de API KEY en el .env
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(requestBody)
     }
   );
 
-  if (!fetchData.ok) {
+  if (!fetchData.ok)
     throw new Error(`${fetchData.statusText} | statusCode: ${fetchData.status}`);
-  }
 
   const response = await fetchData.json();
 
   const content = response.choices?.[0]?.message?.content?.trim();
 
-  if (!content) {
+  if (!content)
     throw new Error("Respuesta inesperada o vacía del modelo");
-  }
+
+  console.log("Respuesta del modelo recibida con éxito");
 
   return content;
 };
