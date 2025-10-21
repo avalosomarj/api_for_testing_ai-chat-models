@@ -2,11 +2,10 @@
   "name": "api_for_testing_ai-chat-models",
   "version": "1.0.0",
   "description": "Simple API for testing AI chat models",
-  "main": "index.js",
   "scripts": {
     "dev": "node --env-file=.env --watch src/server.js",
     "start": "node --env-file=.env src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test"
   },
   "keywords": [],
   "author": "avalosomarj",
