@@ -1,16 +1,16 @@
 const validateReqBody = (req, res, next) => {
   const { systemPrompt, userMessage } = req.body;
 
-  if (typeof systemPrompt !== "string" || typeof userMessage !== "string") {
+  if (typeof systemPrompt !== "string" || !systemPrompt.trim()) {
     return res
       .status(400)
-      .json({ error: "'systemPrompt' y 'userMessage' deben existir y ser de tipo string." });
+      .json({ error: "'systemPrompt' debe existir, ser de tipo string y no puede estar vacío o contener solo espacios." });
   }
 
-  if (!systemPrompt.trim() || !userMessage.trim()) {
+  if (typeof userMessage !== "string" || !userMessage.trim()) {
     return res
       .status(400)
-      .json({ error: "'systemPrompt' y 'userMessage' no pueden estar vacíos o contener solo espacios." });
+      .json({ error: "'userMessage' debe existir, ser de tipo string y no puede estar vacío o contener solo espacios." });
   }
 
   next();
