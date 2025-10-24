@@ -10,6 +10,8 @@ const chatRoute = Router();
  * @swagger
  * /chat:
  *   post:
+ *     tags:
+ *      - Testing de /chat
  *     description: Enviar un prompt y el texto del usuario para obtener una respuesta del modelo de IA.
  *     requestBody:
  *       required: true
@@ -39,7 +41,7 @@ const chatRoute = Router();
  *                   type: string
  *                   description: Respuesta generada por el modelo de IA.
  *       400:
- *         description: Error en validación (systemPrompt o userMessage no existen, no son tipo string o están vacías).
+ *         description: Error en validación (systemPrompt o userMessage no existen, no son tipo string o están vacíos).
  *       500:
  *         description: Error interno del servidor al procesar la solicitud.
  */
